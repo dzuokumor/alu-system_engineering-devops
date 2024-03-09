@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
-# Configuring  Nginx server so that /redirect_me is redirecting to another page.
+# Configuring Nginx server so that /redirect_me is redirecting to another page.
 
-apt-get -y update
-apt-get -y install nginx
-ufw allow  'Nginx HTTP'
-echo "Holberton School" > /var/www/html/index.html
-sed -i '/^\tserver_name.*/a \\trewrite ^/redirect_me https://www.treasureglobalconcepticom.ng/ permanent;' /etc/nginx/sites-available/default 
-service nginx restart
+# Update package repositories and install Nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+
+# Create a simple index.html file
+echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+
+# Define the replacement string for Nginx config
+replacement="server_name _;\\
+    rewrite ^/redirect_me https://github.com/Skomaiya/ permanent;"
+
+# Apply the replacement in the Nginx config file
+sudo sed -i "s|server_name _;|$replacement|" /etc/nginx/sites-available/default
+
+# Test Nginx configuration syntax
+sudo nginx -t
+
+# Restart Nginx to apply changes
+sudo service nginx restart
+
+# Send a request to /redirect_me and capture the HTTP status code
+status_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/redirect_me)
+
+# Print the status code
+echo $status_code
