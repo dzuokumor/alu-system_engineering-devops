@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 # Bash script that configures a new Ubuntu machine nginx
 
+# Update package index and install Nginx
 apt-get -y update
 apt-get -y install nginx
-ufw allow  'Nginx HTTP'
+
+ufw allow 'Nginx HTTP'
+
+sed -i 's/^\(listen\s*\)80/\180/' /etc/nginx/sites-available/default
+
 echo "Holberton School" > /var/www/html/index.html
+
 service nginx restart
+
+if systemctl is-active --quiet nginx; then
+    echo "Nginx is running."
+else
+    echo "Error: Nginx failed to start."
+fi
+
