@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
-# bash script to install nginx web server & make the following configurations:
+# Commands to install Nginx on Web-Sever-01
 
+# Updating Packages before making Installations
 sudo apt-get update
 sudo apt-get -y install nginx
 
-# Create a custom HTML page with the content "Holberton School"
-echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+# Configuring the Uncomplicated Firewall (UFW) to allow incoming traffic for the Nginx HTTP service
+sudo ufw allow 'Nginx HTTP'
 
-# Configure Nginx to listen on port 80
-sudo sed -i 's/80 default_server/80 default_server ipv6only=on/' /etc/nginx/sites-available/default
+# Creating an index.html page
+echo "Holberton School" | sudo tee /var/www/html/index.html
 
-# Restart Nginx using service (systemctl not used)
-sudo service nginx restart
+# Testing Nginx configurations for Syntax errors
+sudo nginx -t
 
-# Wait for Nginx to restart (add a delay of 2 seconds)
-sleep 2
-
-# Check if Nginx returns the expected content
-curl -s http://localhost | grep "Holberton School"
+# Restarting Nginx
+sudo service nginx start
