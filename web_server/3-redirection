@@ -1,28 +1,16 @@
 #!/usr/bin/env bash
-# Configuring Nginx server so that /redirect_me is redirecting to another page.
+#  A Script that configures a new Ubuntu machine to Perform a 301-redirection
 
-# Update package repositories and install Nginx
-sudo apt-get -y update
-sudo apt-get -y install nginx
+# Upadating Packages before Installations
+sudo apt-get update
+sudo apt-get install -y nginx
 
-# Create a simple index.html file
-echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+# Creating an index.html page
+echo "Holberton School" | sudo tee /var/www/html/index.html
 
-# Define the replacement string for Nginx config
-replacement="server_name _;\\
-    rewrite ^/redirect_me https://github.com/Skomaiya/ permanent;"
+# Performing a 301 Redirection
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/dzuokumor permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# Apply the replacement in the Nginx config file
-sudo sed -i "s|server_name _;|$replacement|" /etc/nginx/sites-available/default
-
-# Test Nginx configuration syntax
-sudo nginx -t
-
-# Restart Nginx to apply changes
+# Restarting Nginx service
 sudo service nginx restart
-
-# Send a request to /redirect_me and capture the HTTP status code
-status_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/redirect_me)
-
-# Print the status code
-echo $status_code
